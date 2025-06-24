@@ -350,41 +350,6 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="bg-gray-100 p-6 md:p-8">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                      Kirim Pesan
-                    </h3>
-                    <form>
-                      <div className="mb-4">
-                        <input
-                          type="text"
-                          placeholder="Nama Lengkap"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <input
-                          type="email"
-                          placeholder="Email"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <textarea
-                          rows={4}
-                          placeholder="Pesan"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        ></textarea>
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                      >
-                        Kirim Pesan
-                      </button>
-                    </form>
-                  </div>
                 </div>
               </div>
             </div>

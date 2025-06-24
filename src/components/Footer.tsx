@@ -32,7 +32,7 @@ export default function Footer() {
             <ul className="text-gray-300">
               <li className="mb-1">
                 <a
-                  href="https://www.banyuwangikab.go.id"
+                  href="https://banyuwangikab.go.id"
                   className="hover:text-blue-400 transition-colors"
                 >
                   Website Resmi Kabupaten Banyuwangi

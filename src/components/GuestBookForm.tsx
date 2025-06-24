@@ -5,6 +5,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Swal from "sweetalert2";
+// Daftar desa dan kelurahan di Kecamatan Kalipuro
+const desaKelurahanList = [
+  "Desa Bulusari",
+  "Desa Kelir",
+  "Desa Ketapang",
+  "Desa Pesucen",
+  "Desa Telemung",
+  "Kelurahan Bulusan",
+  "Kelurahan Gombengsari",
+  "Kelurahan Kalipuro",
+  "Kelurahan Klatak",
+];
+
 const formSchema = z.object({
   nama: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
   nik: z
@@ -229,16 +242,19 @@ export default function GuestBookForm() {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">
         Formulir Buku Tamu
       </h2>
+      <p className="text-sm text-gray-600 mb-4">
+        Kolom dengan tanda <span className="text-red-600">*</span> wajib diisi
+      </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
               htmlFor="nama"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-semibold text-gray-800 mb-1"
             >
               Nama Lengkap <span className="text-red-600">*</span>
             </label>
@@ -246,8 +262,8 @@ export default function GuestBookForm() {
               id="nama"
               type="text"
               placeholder="Masukkan nama lengkap"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.nama ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400 ${
+                errors.nama ? "border-red-500" : "border-gray-400"
               }`}
               {...register("nama")}
             />
@@ -255,11 +271,10 @@ export default function GuestBookForm() {
               <p className="mt-1 text-sm text-red-600">{errors.nama.message}</p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="nik"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-semibold text-gray-800 mb-1"
             >
               NIK <span className="text-red-600">*</span>
             </label>
@@ -267,8 +282,8 @@ export default function GuestBookForm() {
               id="nik"
               type="text"
               placeholder="Masukkan 16 digit NIK"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.nik ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400 ${
+                errors.nik ? "border-red-500" : "border-gray-400"
               }`}
               {...register("nik")}
               maxLength={16}
@@ -276,35 +291,38 @@ export default function GuestBookForm() {
             {errors.nik && (
               <p className="mt-1 text-sm text-red-600">{errors.nik.message}</p>
             )}
-          </div>
-
+          </div>{" "}
           <div>
             <label
               htmlFor="desaKelurahan"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-semibold text-gray-800 mb-1"
             >
               Desa/Kelurahan <span className="text-red-600">*</span>
-            </label>
-            <input
+            </label>{" "}
+            <select
               id="desaKelurahan"
-              type="text"
-              placeholder="Masukkan desa/kelurahan"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.desaKelurahan ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400 ${
+                errors.desaKelurahan ? "border-red-500" : "border-gray-400"
               }`}
               {...register("desaKelurahan")}
-            />
+            >
+              <option value="">-- Pilih Desa/Kelurahan --</option>
+              {desaKelurahanList.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
             {errors.desaKelurahan && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.desaKelurahan.message}
               </p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="noTelepon"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-semibold text-gray-800 mb-1"
             >
               Nomor Telepon <span className="text-red-600">*</span>
             </label>
@@ -312,8 +330,8 @@ export default function GuestBookForm() {
               id="noTelepon"
               type="text"
               placeholder="Masukkan nomor telepon"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.noTelepon ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400 ${
+                errors.noTelepon ? "border-red-500" : "border-gray-400"
               }`}
               {...register("noTelepon")}
             />
@@ -328,7 +346,7 @@ export default function GuestBookForm() {
         <div>
           <label
             htmlFor="alamat"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-semibold text-gray-800 mb-1"
           >
             Alamat Lengkap (RT/RW/Dusun) <span className="text-red-600">*</span>
           </label>
@@ -336,8 +354,8 @@ export default function GuestBookForm() {
             id="alamat"
             type="text"
             placeholder="Masukkan alamat lengkap (RT/RW/Dusun)"
-            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              errors.alamat ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400 ${
+              errors.alamat ? "border-red-500" : "border-gray-400"
             }`}
             {...register("alamat")}
           />
@@ -349,7 +367,7 @@ export default function GuestBookForm() {
         <div>
           <label
             htmlFor="keperluan"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-semibold text-gray-800 mb-1"
           >
             Keperluan <span className="text-red-600">*</span>
           </label>
@@ -357,8 +375,8 @@ export default function GuestBookForm() {
             id="keperluan"
             rows={3}
             placeholder="Jelaskan keperluan Anda"
-            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              errors.keperluan ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400 ${
+              errors.keperluan ? "border-red-500" : "border-gray-400"
             }`}
             {...register("keperluan")}
           ></textarea>
@@ -372,7 +390,7 @@ export default function GuestBookForm() {
         <div>
           <label
             htmlFor="dokumentasiPelayanan"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-semibold text-gray-800 mb-1"
           >
             Dokumentasi Pelayanan
           </label>{" "}
@@ -385,9 +403,9 @@ export default function GuestBookForm() {
               // Register file with react-hook-form
               register("dokumentasiPelayanan").onChange(e);
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-          <p className="mt-1 text-sm text-gray-500">
+            className="w-full px-4 py-2 border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-medium bg-white hover:border-blue-400"
+          />{" "}
+          <p className="mt-1 text-sm text-gray-600">
             Unggah foto dokumentasi pelayanan (opsional)
           </p>
           {selectedFile && (
@@ -401,7 +419,7 @@ export default function GuestBookForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors ${
+            className={`px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors text-base font-bold shadow-md ${
               isSubmitting ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >

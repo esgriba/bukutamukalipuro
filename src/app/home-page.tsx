@@ -18,15 +18,15 @@ export default function Home() {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Selamat Datang di Kantor Kecamatan Kalipuro
-              </h1>
-              <p className="text-xl mb-8">
+              </h1>{" "}
+              <p className="text-xl mb-8 font-medium">
                 Sistem Buku Tamu Digital untuk Pelayanan yang Lebih Baik
-              </p>
+              </p>{" "}
               <Link
                 href="/buku-tamu"
-                className="inline-block px-6 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-colors"
+                className="inline-block px-6 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-colors text-lg shadow-md"
               >
-                Isi Buku Tamu
+                ISI BUKU TAMU
               </Link>
             </div>
           </div>
@@ -38,14 +38,13 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
                 Tentang Kecamatan Kalipuro
-              </h2>
-              <p className="text-lg text-gray-600 mb-8 text-center">
-                Kecamatan Kalipuro adalah salah satu kecamatan di Kabupaten
+              </h2>{" "}
+              <p className="text-lg text-gray-600 mb-8 text-center font-medium">
+                Kecamatan Kalipuro merupakan salah satu kecamatan di Kabupaten
                 Banyuwangi, Provinsi Jawa Timur. Kami berkomitmen memberikan
                 pelayanan terbaik kepada masyarakat dengan mengedepankan
                 transparansi, efisiensi, dan kepuasan masyarakat.
               </p>
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
                 <div className="text-center p-6 bg-blue-50 rounded-lg">
                   <div className="inline-block p-3 bg-blue-100 rounded-full mb-4">
@@ -131,18 +130,20 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-6">
                 Buku Tamu Digital
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Untuk meningkatkan kualitas pelayanan kami, setiap pengunjung
-                dimohon untuk mengisi buku tamu digital. Ini membantu kami
-                melacak dan memperbaiki layanan kami kepada masyarakat.
+              </h2>{" "}
+              <p className="text-lg text-gray-700 mb-8 font-medium">
+                Untuk meningkatkan kualitas pelayanan, setiap pengunjung Kantor
+                Kecamatan dimohon untuk mengisi buku tamu digital. Hal ini
+                membantu kami dalam mengevaluasi dan meningkatkan kualitas
+                pelayanan kepada masyarakat.
               </p>
               <div className="mt-8">
+                {" "}
                 <Link
                   href="/buku-tamu"
-                  className="inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-colors"
+                  className="inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-colors text-lg shadow-lg"
                 >
-                  Isi Buku Tamu Sekarang
+                  ISI BUKU TAMU SEKARANG
                 </Link>
               </div>
             </div>
@@ -152,20 +153,20 @@ export default function Home() {
         {/* Services Section */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
+            {" "}
             <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">
-              Pelayanan Kami
+              PELAYANAN KAMI
             </h2>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   Administrasi Kependudukan
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </h3>{" "}
+                <p className="text-gray-700 mb-4 font-medium">
                   Pengurusan dokumen kependudukan, surat pindah, dan informasi
                   kependudukan lainnya.
                 </p>
-                <span className="text-blue-600 font-medium">
+                <span className="text-blue-700 font-semibold">
                   Senin-Jumat, 08:00-15:00 WIB
                 </span>
               </div>
@@ -173,12 +174,12 @@ export default function Home() {
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   Perizinan
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </h3>{" "}
+                <p className="text-gray-700 mb-4 font-medium">
                   Pengurusan berbagai jenis izin tingkat kecamatan untuk
                   kegiatan masyarakat.
                 </p>
-                <span className="text-blue-600 font-medium">
+                <span className="text-blue-700 font-semibold">
                   Senin-Jumat, 08:00-15:00 WIB
                 </span>
               </div>
@@ -186,12 +187,12 @@ export default function Home() {
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   Legalisasi Dokumen
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </h3>{" "}
+                <p className="text-gray-700 mb-4 font-medium">
                   Legalisasi dan pengesahan dokumen-dokumen penting tingkat
                   kecamatan.
                 </p>
-                <span className="text-blue-600 font-medium">
+                <span className="text-blue-700 font-semibold">
                   Senin-Jumat, 08:00-15:00 WIB
                 </span>
               </div>
@@ -199,12 +200,12 @@ export default function Home() {
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   Konsultasi Masyarakat
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </h3>{" "}
+                <p className="text-gray-700 mb-4 font-medium">
                   Layanan konsultasi untuk berbagai permasalahan di tingkat
                   masyarakat.
                 </p>
-                <span className="text-blue-600 font-medium">
+                <span className="text-blue-700 font-semibold">
                   Senin-Jumat, 08:00-15:00 WIB
                 </span>
               </div>
@@ -212,12 +213,12 @@ export default function Home() {
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   Pemberdayaan Masyarakat
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </h3>{" "}
+                <p className="text-gray-700 mb-4 font-medium">
                   Program dan kegiatan untuk meningkatkan kesejahteraan dan
                   pemberdayaan masyarakat.
                 </p>
-                <span className="text-blue-600 font-medium">
+                <span className="text-blue-700 font-semibold">
                   Jadwal Menyesuaikan
                 </span>
               </div>
@@ -225,11 +226,11 @@ export default function Home() {
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   Informasi Publik
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </h3>{" "}
+                <p className="text-gray-700 mb-4 font-medium">
                   Pelayanan informasi publik dan data terkait wilayah kecamatan.
                 </p>
-                <span className="text-blue-600 font-medium">
+                <span className="text-blue-700 font-semibold">
                   Senin-Jumat, 08:00-15:00 WIB
                 </span>
               </div>
@@ -274,10 +275,11 @@ export default function Home() {
                           />
                         </svg>
                         <div>
-                          <p className="text-gray-600">
+                          {" "}
+                          <p className="text-gray-700 font-medium">
                             Jl. Raya Kalipuro No. 123
                           </p>
-                          <p className="text-gray-600">
+                          <p className="text-gray-700 font-medium">
                             Kabupaten Banyuwangi, Jawa Timur
                           </p>
                         </div>
@@ -299,8 +301,13 @@ export default function Home() {
                           />
                         </svg>
                         <div>
-                          <p className="text-gray-600">(0333) 123456</p>
-                          <p className="text-gray-600">08123456789</p>
+                          {" "}
+                          <p className="text-gray-700 font-medium">
+                            (0333) 123456
+                          </p>
+                          <p className="text-gray-700 font-medium">
+                            08123456789
+                          </p>
                         </div>
                       </div>
 
@@ -320,7 +327,8 @@ export default function Home() {
                           />
                         </svg>
                         <div>
-                          <p className="text-gray-600">
+                          {" "}
+                          <p className="text-gray-700 font-medium">
                             kecamatan.kalipuro@banyuwangikab.go.id
                           </p>
                         </div>
@@ -342,48 +350,16 @@ export default function Home() {
                           />
                         </svg>
                         <div>
-                          <p className="text-gray-600">
+                          {" "}
+                          <p className="text-gray-700 font-medium">
                             Senin - Jumat: 08:00 - 16:00 WIB
                           </p>
-                          <p className="text-gray-600">Sabtu - Minggu: Tutup</p>
+                          <p className="text-gray-700 font-medium">
+                            Sabtu - Minggu: Tutup
+                          </p>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="bg-gray-100 p-6 md:p-8">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                      Kirim Pesan
-                    </h3>
-                    <form>
-                      <div className="mb-4">
-                        <input
-                          type="text"
-                          placeholder="Nama Lengkap"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <input
-                          type="email"
-                          placeholder="Email"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <textarea
-                          rows={4}
-                          placeholder="Pesan"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        ></textarea>
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                      >
-                        Kirim Pesan
-                      </button>
-                    </form>
                   </div>
                 </div>
               </div>
