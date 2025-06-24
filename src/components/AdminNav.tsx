@@ -53,7 +53,7 @@ export default function AdminNav() {
           )} bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300`}
         >
           Test Supabase
-        </Link>
+        </Link>{" "}
         <Link
           href="/admin/api-test"
           className={`${linkClasses(
@@ -61,6 +61,14 @@ export default function AdminNav() {
           )} bg-green-100 hover:bg-green-200 text-green-800 border border-green-300`}
         >
           API Test
+        </Link>
+        <Link
+          href="/admin/network-monitor"
+          className={`${linkClasses(
+            "/admin/network-monitor"
+          )} bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300`}
+        >
+          Network Monitor
         </Link>
       </nav>
     </div>

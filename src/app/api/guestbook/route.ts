@@ -70,14 +70,18 @@ export async function POST(request: Request) {
           keperluan,
           dokumentasiPelayanan,
         },
-      });      console.log("Guest entry created successfully:", newGuestEntry.id);
+      });
+      console.log("Guest entry created successfully:", newGuestEntry.id);
       const response = NextResponse.json(newGuestEntry, { status: 201 });
-      
+
       // Add cache control headers to POST response too
-      response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      response.headers.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate"
+      );
       response.headers.set("Pragma", "no-cache");
       response.headers.set("Expires", "0");
-      
+
       return response;
     } catch (dbError: any) {
       console.error("Database error creating guest entry:", dbError);

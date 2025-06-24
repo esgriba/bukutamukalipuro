@@ -143,14 +143,14 @@ export default function GuestListSWR({
             Cari
           </button>
         </form>
-      </div>      {/* Loading indicator - show at the top while keeping data visible */}
+      </div>{" "}
+      {/* Loading indicator - show at the top while keeping data visible */}
       {isLoading && (
         <div className="p-2 bg-blue-50 text-center flex items-center justify-center gap-2">
           <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-600"></div>
           <p className="text-blue-600 text-sm">Memperbarui data...</p>
         </div>
       )}
-
       {/* Error state */}
       {error && (
         <div className="p-4 text-center">
@@ -169,7 +169,6 @@ export default function GuestListSWR({
           </button>
         </div>
       )}
-
       {/* Guest list - always show even while loading */}
       {(guests.length > 0 || !isLoading) && (
         <>

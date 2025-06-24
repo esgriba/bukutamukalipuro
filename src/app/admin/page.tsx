@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import GuestListSWR from "@/components/GuestListSWR";
 import AdminNav from "@/components/AdminNav";
 import AdminRefreshHead from "@/components/AdminRefreshHead";
+import AdminDataStatus from "@/components/AdminDataStatus";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -54,12 +55,16 @@ export default async function AdminPage() {
                 </button>
               </div>
             </div>
-            <AdminNav />
+            <AdminNav />{" "}
             {/* This component adds a periodic refresh for real-time data updates */}
             <div className="mt-4">
               <AdminRefreshHead />
             </div>
-            <div className="mt-6">
+            {/* Database status indicator */}
+            <div className="mt-2 mb-4">
+              <AdminDataStatus />
+            </div>
+            <div className="mt-4">
               <GuestListSWR
                 initialGuests={JSON.parse(JSON.stringify(guests))}
                 totalPages={totalPages}

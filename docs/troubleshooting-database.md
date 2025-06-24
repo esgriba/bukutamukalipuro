@@ -87,9 +87,17 @@ Jika halaman `/admin` tidak menampilkan data terbaru dari Supabase meski `/admin
    - Pastikan setiap API request menyertakan header cache control
    - Tambahkan parameter timestamp pada URL API untuk mencegah caching
 
-3. **Refresh Manual**: Tambahkan tombol "Refresh Data" di halaman admin
+3. **Infinite Loading Issue**: Jika halaman admin menunjukkan loading terus-menerus:
 
-4. **Bersihkan Cache Browser**: Pengguna dapat mencoba:
+   - Pastikan parameter `timestamp` dalam `GuestListSWR` tidak berubah setiap render
+   - Gunakan state variable untuk timestamp yang hanya diupdate pada operasi tertentu
+   - Aktifkan opsi `keepPreviousData: true` pada SWR
+   - Kunjungi `/admin/network-monitor` untuk mendiagnosis masalah koneksi API
+
+4. **Tools Diagnostik**:
+   - Gunakan `/admin/network-monitor` untuk memeriksa respons API secara real-time
+   - Gunakan `/admin/api-test` untuk menguji penyimpanan dan pengambilan data
+5. **Bersihkan Cache Browser**: Pengguna dapat mencoba:
    - Tekan Ctrl+F5 untuk refresh tanpa cache
    - Buka DevTools (F12) > Tab Network > Centang "Disable cache"
 
