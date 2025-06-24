@@ -99,11 +99,46 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
+    // Check environment variables first
+    const envCheck = checkEnvVars();
+    if (!envCheck.valid) {
+      console.error(
+        `Missing required environment variables: ${envCheck.missing.join(", ")}`
+      );
+      return NextResponse.json(
+        {
+          error: "Konfigurasi server tidak lengkap",
+          details:
+            "Database tidak terkonfigurasi dengan benar. Hubungi administrator.",
+          missing: envCheck.missing,
+          data: [],
+          total: 0,
+        },
+        {
+          status: 500,
+          headers: {
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
-    const skip = (page - 1) * limit; // Build search conditions for Prisma
+    const skip = (page - 1) * limit;
+
+    console.log(
+      `[GET] Fetching guests - page: ${page}, limit: ${limit}, search: ${
+        search || "none"
+      }`
+    );
+
+    // Build search conditions for Prisma
     const where = search
       ? {
           OR: [
@@ -115,33 +150,82 @@ export async function GET(request: Request) {
         }
       : {};
 
-    // Get guests with pagination
-    const guests = await prisma.guestEntry.findMany({
-      where,
-      take: limit,
-      skip,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    try {
+      // Get guests with pagination
+      const guests = await prisma.guestEntry.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
 
-    // Get total count for pagination
-    const totalGuests = await prisma.guestEntry.count({ where });
-    const totalPages = Math.ceil(totalGuests / limit);
-    return NextResponse.json({
-      data: guests,
-      total: totalGuests,
-      meta: {
-        page,
-        limit,
-        totalPages,
-      },
-    });
-  } catch (error) {
+      console.log(`[GET] Found ${guests.length} guests`);
+
+      // Get total count for pagination
+      const totalGuests = await prisma.guestEntry.count({ where });
+      const totalPages = Math.ceil(totalGuests / limit);
+
+      // Set cache-control headers to prevent caching
+      return NextResponse.json(
+        {
+          data: guests,
+          total: totalGuests,
+          meta: {
+            page,
+            limit,
+            totalPages,
+          },
+        },
+        {
+          headers: {
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        }
+      );
+    } catch (dbError: any) {
+      console.error("Database error fetching guest entries:", dbError);
+      return NextResponse.json(
+        {
+          error: "Gagal mengambil data dari database",
+          details: dbError.message || "Unknown database error",
+          code: dbError.code,
+          data: [],
+          total: 0,
+        },
+        {
+          status: 500,
+          headers: {
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        }
+      );
+    }
+  } catch (error: any) {
     console.error("Error fetching guest entries:", error);
     return NextResponse.json(
-      { error: "Terjadi kesalahan saat mengambil data" },
-      { status: 500 }
+      {
+        error: "Terjadi kesalahan saat mengambil data",
+        details: error.message || "Unknown error",
+        data: [],
+        total: 0,
+      },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
     );
   }
 }

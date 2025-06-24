@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   description: "Detail data tamu di Kantor Kecamatan Kalipuro",
 };
 
+// Disable cache for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Props = {
   params: {
     id: string;
@@ -26,12 +30,37 @@ export default async function GuestDetail({ params }: Props) {
     notFound();
   }
 
-  // Fetch guest data from database
-  const guest = await prisma.guestEntry.findUnique({
-    where: {
-      id: guestId,
-    },
-  });
+  // Fetch guest data from API instead of direct Prisma call to ensure cache control
+  const timestamp = Date.now(); // Add timestamp to prevent caching
+  const response = await fetch(
+    `${
+      process.env.VERCEL_URL || "http://localhost:3000"
+    }/api/guestbook/${guestId}?_t=${timestamp}`,
+    {
+      cache: "no-store",
+      next: { revalidate: 0 },
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    }
+  );
+
+  // If API call fails, fall back to direct Prisma query
+  let guest;
+  if (!response.ok) {
+    console.error(
+      `API call failed, falling back to direct Prisma query for guest ID ${guestId}`
+    );
+    guest = await prisma.guestEntry.findUnique({
+      where: {
+        id: guestId,
+      },
+    });
+  } else {
+    guest = await response.json();
+  }
 
   // If guest not found
   if (!guest) {

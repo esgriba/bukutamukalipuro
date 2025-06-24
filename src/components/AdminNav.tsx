@@ -21,8 +21,7 @@ export default function AdminNav() {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 mb-6">
-      <h2 className="text-lg font-semibold mb-4">Admin Tools</h2>
-
+      <h2 className="text-lg font-semibold mb-4">Admin Tools</h2>{" "}
       <nav className="flex flex-wrap gap-2">
         <Link href="/admin" className={linkClasses("/admin")}>
           Dashboard
@@ -46,6 +45,22 @@ export default function AdminNav() {
           )} bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-300`}
         >
           Diagnosa Database
+        </Link>
+        <Link
+          href="/admin/supabase-test"
+          className={`${linkClasses(
+            "/admin/supabase-test"
+          )} bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300`}
+        >
+          Test Supabase
+        </Link>
+        <Link
+          href="/admin/api-test"
+          className={`${linkClasses(
+            "/admin/api-test"
+          )} bg-green-100 hover:bg-green-200 text-green-800 border border-green-300`}
+        >
+          API Test
         </Link>
       </nav>
     </div>

@@ -1,6 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import GuestList from "@/components/GuestList";
+import GuestListSWR from "@/components/GuestListSWR";
+import AdminNav from "@/components/AdminNav";
+import AdminRefreshHead from "@/components/AdminRefreshHead";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -9,6 +11,10 @@ export const metadata = {
   description:
     "Halaman Admin untuk mengelola data tamu di Kantor Kecamatan Kalipuro",
 };
+
+// Disable cache for this page
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 // This would normally check session/auth token
 const isAuthenticated = true;
@@ -37,6 +43,7 @@ export default async function AdminPage() {
       <main className="min-h-screen bg-gray-50 py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
+            {" "}
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold text-gray-800">
                 Data Buku Tamu
@@ -47,11 +54,17 @@ export default async function AdminPage() {
                 </button>
               </div>
             </div>
-
-            <GuestList
-              initialGuests={JSON.parse(JSON.stringify(guests))}
-              totalPages={totalPages}
-            />
+            <AdminNav />
+            {/* This component adds a periodic refresh for real-time data updates */}
+            <div className="mt-4">
+              <AdminRefreshHead />
+            </div>
+            <div className="mt-6">
+              <GuestListSWR
+                initialGuests={JSON.parse(JSON.stringify(guests))}
+                totalPages={totalPages}
+              />
+            </div>
           </div>
         </div>
       </main>

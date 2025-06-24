@@ -1,15 +1,49 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkEnvVars } from "@/lib/validate-env";
+
+// Helper function to set cache control headers
+const addCacheControlHeaders = (response: NextResponse) => {
+  response.headers.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+  return response;
+};
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check environment variables
+    const envCheck = checkEnvVars();
+    if (!envCheck.valid) {
+      console.error(
+        `Missing required environment variables: ${envCheck.missing.join(", ")}`
+      );
+      return addCacheControlHeaders(
+        NextResponse.json(
+          {
+            error: "Konfigurasi server tidak lengkap",
+            details:
+              "Database tidak terkonfigurasi dengan benar. Hubungi administrator.",
+            missing: envCheck.missing,
+          },
+          { status: 500 }
+        )
+      );
+    }
+
     const id = parseInt(params.id);
+    console.log(`[GET] Fetching guest entry with ID: ${id}`);
 
     if (isNaN(id)) {
-      return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+      return addCacheControlHeaders(
+        NextResponse.json({ error: "ID tidak valid" }, { status: 400 })
+      );
     }
 
     const guestEntry = await prisma.guestEntry.findUnique({
@@ -19,18 +53,25 @@ export async function GET(
     });
 
     if (!guestEntry) {
-      return NextResponse.json(
-        { error: "Data tamu tidak ditemukan" },
-        { status: 404 }
+      return addCacheControlHeaders(
+        NextResponse.json(
+          { error: "Data tamu tidak ditemukan" },
+          { status: 404 }
+        )
       );
     }
 
-    return NextResponse.json(guestEntry);
-  } catch (error) {
+    return addCacheControlHeaders(NextResponse.json(guestEntry));
+  } catch (error: any) {
     console.error("Error fetching guest entry:", error);
-    return NextResponse.json(
-      { error: "Terjadi kesalahan saat mengambil data" },
-      { status: 500 }
+    return addCacheControlHeaders(
+      NextResponse.json(
+        {
+          error: "Terjadi kesalahan saat mengambil data",
+          details: error.message || "Unknown error",
+        },
+        { status: 500 }
+      )
     );
   }
 }
@@ -40,11 +81,30 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check environment variables
+    const envCheck = checkEnvVars();
+    if (!envCheck.valid) {
+      return addCacheControlHeaders(
+        NextResponse.json(
+          {
+            error: "Konfigurasi server tidak lengkap",
+            details:
+              "Database tidak terkonfigurasi dengan benar. Hubungi administrator.",
+            missing: envCheck.missing,
+          },
+          { status: 500 }
+        )
+      );
+    }
+
     const id = parseInt(params.id);
     const body = await request.json();
+    console.log(`[PUT] Updating guest entry with ID: ${id}`);
 
     if (isNaN(id)) {
-      return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+      return addCacheControlHeaders(
+        NextResponse.json({ error: "ID tidak valid" }, { status: 400 })
+      );
     }
 
     // Check if the guest entry exists
@@ -55,9 +115,11 @@ export async function PUT(
     });
 
     if (!existingEntry) {
-      return NextResponse.json(
-        { error: "Data tamu tidak ditemukan" },
-        { status: 404 }
+      return addCacheControlHeaders(
+        NextResponse.json(
+          { error: "Data tamu tidak ditemukan" },
+          { status: 404 }
+        )
       );
     }
 
@@ -69,12 +131,17 @@ export async function PUT(
       data: body,
     });
 
-    return NextResponse.json(updatedEntry);
-  } catch (error) {
+    return addCacheControlHeaders(NextResponse.json(updatedEntry));
+  } catch (error: any) {
     console.error("Error updating guest entry:", error);
-    return NextResponse.json(
-      { error: "Terjadi kesalahan saat mengupdate data" },
-      { status: 500 }
+    return addCacheControlHeaders(
+      NextResponse.json(
+        {
+          error: "Terjadi kesalahan saat mengupdate data",
+          details: error.message || "Unknown error",
+        },
+        { status: 500 }
+      )
     );
   }
 }
@@ -84,10 +151,29 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check environment variables
+    const envCheck = checkEnvVars();
+    if (!envCheck.valid) {
+      return addCacheControlHeaders(
+        NextResponse.json(
+          {
+            error: "Konfigurasi server tidak lengkap",
+            details:
+              "Database tidak terkonfigurasi dengan benar. Hubungi administrator.",
+            missing: envCheck.missing,
+          },
+          { status: 500 }
+        )
+      );
+    }
+
     const id = parseInt(params.id);
+    console.log(`[DELETE] Deleting guest entry with ID: ${id}`);
 
     if (isNaN(id)) {
-      return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+      return addCacheControlHeaders(
+        NextResponse.json({ error: "ID tidak valid" }, { status: 400 })
+      );
     }
 
     // Check if the guest entry exists
@@ -98,9 +184,11 @@ export async function DELETE(
     });
 
     if (!existingEntry) {
-      return NextResponse.json(
-        { error: "Data tamu tidak ditemukan" },
-        { status: 404 }
+      return addCacheControlHeaders(
+        NextResponse.json(
+          { error: "Data tamu tidak ditemukan" },
+          { status: 404 }
+        )
       );
     }
 
@@ -111,15 +199,22 @@ export async function DELETE(
       },
     });
 
-    return NextResponse.json(
-      { message: "Data tamu berhasil dihapus" },
-      { status: 200 }
+    return addCacheControlHeaders(
+      NextResponse.json(
+        { message: "Data tamu berhasil dihapus" },
+        { status: 200 }
+      )
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting guest entry:", error);
-    return NextResponse.json(
-      { error: "Terjadi kesalahan saat menghapus data" },
-      { status: 500 }
+    return addCacheControlHeaders(
+      NextResponse.json(
+        {
+          error: "Terjadi kesalahan saat menghapus data",
+          details: error.message || "Unknown error",
+        },
+        { status: 500 }
+      )
     );
   }
 }

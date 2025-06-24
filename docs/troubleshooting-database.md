@@ -71,6 +71,28 @@ Pastikan semua variabel lingkungan berikut sudah diatur di dashboard Vercel:
 - Periksa apakah database sleeping atau inactive
 - Verifikasi koneksi database dari Vercel ke Supabase
 
+#### Data Di Admin Tidak Sinkron Dengan Supabase
+
+Jika halaman `/admin` tidak menampilkan data terbaru dari Supabase meski `/admin/debug` berjalan dengan baik:
+
+1. **Masalah Caching**: Next.js mungkin melakukan caching pada halaman dan data. Pastikan:
+
+   - Halaman menggunakan `export const dynamic = 'force-dynamic'`
+   - Halaman menggunakan `export const revalidate = 0`
+   - Komponen client menggunakan SWR dengan revalidasi yang tepat
+
+2. **Solusi Untuk Admin Page**:
+
+   - Ganti komponen `GuestList` dengan `GuestListSWR` yang menggunakan SWR
+   - Pastikan setiap API request menyertakan header cache control
+   - Tambahkan parameter timestamp pada URL API untuk mencegah caching
+
+3. **Refresh Manual**: Tambahkan tombol "Refresh Data" di halaman admin
+
+4. **Bersihkan Cache Browser**: Pengguna dapat mencoba:
+   - Tekan Ctrl+F5 untuk refresh tanpa cache
+   - Buka DevTools (F12) > Tab Network > Centang "Disable cache"
+
 ### 5. Menggunakan Local Storage sebagai Fallback
 
 Jika masalah persisten dengan Supabase, pertimbangkan untuk menggunakan local storage sebagai fallback:
