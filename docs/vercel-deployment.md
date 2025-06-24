@@ -29,6 +29,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=[supabase-anon-key-anda]
 NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET=dokumentasi
 ```
 
+> **Penting!** Jangan lupa untuk mengganti `[supabase-anon-key-anda]` dengan nilai key Supabase yang sebenarnya.
+
 Pastikan untuk mengganti nilai-nilai dengan kredensial Supabase Anda yang sebenarnya.
 
 ### 3. Konfigurasi Build Command (opsional)
@@ -47,10 +49,18 @@ Default: `npm run build`
 Jika terjadi error saat build:
 
 1. **Error ESLint**: Sudah ditangani dengan konfigurasi `next.config.js`, tetapi jika masih bermasalah:
-   - Tambahkan `NEXT_LINT=false` ke Environment Variables
-2. **Error Database**: Pastikan string koneksi database benar dan database dapat diakses dari Vercel
 
-3. **Error Supabase Storage**: Pastikan bucket sudah dibuat dan kebijakan (policy) sudah diatur dengan benar
+   - Tambahkan `NEXT_LINT=false` ke Environment Variables
+
+2. **Error TypeScript**: Sudah ditangani dengan konfigurasi `typescript.ignoreBuildErrors` di `next.config.js`
+
+   - Jika masih muncul error tipe, periksa file yang bermasalah dan sesuaikan tipenya
+
+3. **Error Database**: Pastikan string koneksi database benar dan database dapat diakses dari Vercel
+
+   - Pastikan Prisma generate dijalankan dengan menambahkan `npx prisma generate` dalam script build atau postinstall
+
+4. **Error Supabase Storage**: Pastikan bucket sudah dibuat dan kebijakan (policy) sudah diatur dengan benar
 
 ### 6. Custom Domain (opsional)
 
