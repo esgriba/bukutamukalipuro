@@ -49,12 +49,12 @@ export default function GuestListSWR({
 }: GuestListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [timestamp, setTimestamp] = useState(Date.now()); // Use state for timestamp
 
   // Buat URL API dengan parameter yang diperlukan
   const apiUrl = `/api/guestbook?page=${currentPage}&limit=10&search=${encodeURIComponent(
     searchTerm
-  )}&_t=${Date.now()}`; // Menambahkan timestamp untuk menghindari caching
-
+  )}&_t=${timestamp}`; // Gunakan timestamp dari state untuk menghindari infinite refetch
   // Gunakan SWR untuk fetching data
   const { data, error, isLoading, mutate } = useSWR(apiUrl, fetcher, {
     fallbackData: {
@@ -65,25 +65,30 @@ export default function GuestListSWR({
     revalidateOnFocus: true,
     revalidateOnMount: true,
     dedupingInterval: 0,
+    keepPreviousData: true, // Pertahankan data sebelumnya saat loading untuk menghindari flickering
+    errorRetryCount: 3, // Batasi retry otomatis saat error
+    refreshInterval: 30000, // Refresh otomatis setiap 30 detik
   });
-
   // Mendapatkan data dari hasil SWR atau data awal
-  const guests = data?.data || [];
+  const guests: Guest[] = data?.data || [];
   const totalPagesCount = data?.meta?.totalPages || initialTotalPages;
-
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
-    // SWR akan otomatis refetch data karena URL akan berubah
+    // Update timestamp ketika pindah halaman untuk memastikan data fresh
+    setTimestamp(Date.now());
   };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    // Memaksa refresh data meskipun URL tidak berubah
+    // Update timestamp ketika pencarian untuk memastikan data fresh
+    setTimestamp(Date.now());
     mutate();
   };
 
   const handleRefresh = () => {
+    // Update timestamp ketika refresh untuk memastikan data fresh
+    setTimestamp(Date.now());
     mutate();
   };
 
@@ -138,25 +143,26 @@ export default function GuestListSWR({
             Cari
           </button>
         </form>
-      </div>
-
-      {/* Loading state */}
+      </div>      {/* Loading indicator - show at the top while keeping data visible */}
       {isLoading && (
-        <div className="p-8 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-2"></div>
-          <p className="text-gray-600">Memuat data...</p>
+        <div className="p-2 bg-blue-50 text-center flex items-center justify-center gap-2">
+          <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-600"></div>
+          <p className="text-blue-600 text-sm">Memperbarui data...</p>
         </div>
       )}
 
       {/* Error state */}
       {error && (
-        <div className="p-8 text-center">
+        <div className="p-4 text-center">
           <div className="bg-red-100 p-4 rounded-lg text-red-700 mb-4">
             <p>Gagal memuat data. Silahkan coba lagi.</p>
             <p className="text-sm mt-1">{error.message}</p>
           </div>
           <button
-            onClick={() => mutate()}
+            onClick={() => {
+              setTimestamp(Date.now());
+              mutate();
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             Coba Lagi
@@ -164,8 +170,8 @@ export default function GuestListSWR({
         </div>
       )}
 
-      {/* Guest list */}
-      {!isLoading && !error && (
+      {/* Guest list - always show even while loading */}
+      {(guests.length > 0 || !isLoading) && (
         <>
           {guests.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
