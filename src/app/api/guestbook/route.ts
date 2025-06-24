@@ -1,8 +1,26 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkEnvVars } from "@/lib/validate-env";
 
 export async function POST(request: Request) {
   try {
+    // Check if environment variables are configured correctly
+    const envCheck = checkEnvVars();
+    if (!envCheck.valid) {
+      console.error(
+        `Missing required environment variables: ${envCheck.missing.join(", ")}`
+      );
+      return NextResponse.json(
+        {
+          error: "Konfigurasi server tidak lengkap",
+          details:
+            "Database tidak terkonfigurasi dengan benar. Hubungi administrator.",
+          missing: envCheck.missing,
+        },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const {
       nama,
@@ -13,6 +31,17 @@ export async function POST(request: Request) {
       keperluan,
       dokumentasiPelayanan,
     } = body;
+
+    // Log request body for debugging
+    console.log("Received form submission:", {
+      nama,
+      nik: nik ? `${nik.substring(0, 4)}...` : undefined, // Log partially for privacy
+      desaKelurahan,
+      alamat: alamat ? `${alamat.substring(0, 10)}...` : undefined, // Log partially for privacy
+      noTelepon: noTelepon ? `${noTelepon.substring(0, 4)}...` : undefined, // Log partially for privacy
+      keperluan: keperluan ? `${keperluan.substring(0, 10)}...` : undefined, // Log partially
+      hasDokumentasi: !!dokumentasiPelayanan,
+    });
 
     // Validate required fields
     if (
@@ -29,24 +58,40 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create new guest entry
-    const newGuestEntry = await prisma.guestEntry.create({
-      data: {
-        nama,
-        nik,
-        desaKelurahan,
-        alamat,
-        noTelepon,
-        keperluan,
-        dokumentasiPelayanan,
-      },
-    });
+    try {
+      // Create new guest entry
+      const newGuestEntry = await prisma.guestEntry.create({
+        data: {
+          nama,
+          nik,
+          desaKelurahan,
+          alamat,
+          noTelepon,
+          keperluan,
+          dokumentasiPelayanan,
+        },
+      });
 
-    return NextResponse.json(newGuestEntry, { status: 201 });
-  } catch (error) {
+      console.log("Guest entry created successfully:", newGuestEntry.id);
+      return NextResponse.json(newGuestEntry, { status: 201 });
+    } catch (dbError: any) {
+      console.error("Database error creating guest entry:", dbError);
+      return NextResponse.json(
+        {
+          error: "Gagal menyimpan ke database",
+          details: dbError.message || "Unknown database error",
+          code: dbError.code,
+        },
+        { status: 500 }
+      );
+    }
+  } catch (error: any) {
     console.error("Error creating guest entry:", error);
     return NextResponse.json(
-      { error: "Terjadi kesalahan saat menyimpan data" },
+      {
+        error: "Terjadi kesalahan saat menyimpan data",
+        details: error.message || "Unknown error",
+      },
       { status: 500 }
     );
   }
@@ -58,16 +103,14 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
-    const skip = (page - 1) * limit;
-
-    // Build search conditions
+    const skip = (page - 1) * limit; // Build search conditions for Prisma
     const where = search
       ? {
           OR: [
-            { nama: { contains: search, mode: "insensitive" } },
-            { nik: { contains: search, mode: "insensitive" } },
-            { desaKelurahan: { contains: search, mode: "insensitive" } },
-            { keperluan: { contains: search, mode: "insensitive" } },
+            { nama: { contains: search } },
+            { nik: { contains: search } },
+            { desaKelurahan: { contains: search } },
+            { keperluan: { contains: search } },
           ],
         }
       : {};

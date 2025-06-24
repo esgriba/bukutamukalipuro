@@ -179,9 +179,7 @@ export default function GuestBookForm() {
           });
           // Continue form submission without the file
         }
-      }
-
-      // Submit form data to API
+      } // Submit form data to API
       const response = await fetch("/api/guestbook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -196,11 +194,22 @@ export default function GuestBookForm() {
         }),
       });
 
-      const responseData = await response.json();
+      // Debug untuk Vercel
+      console.log("API response status:", response.status);
+
+      let responseData;
+      try {
+        responseData = await response.json();
+        console.log("API response data:", responseData);
+      } catch (parseError) {
+        console.error("Error parsing response:", parseError);
+      }
 
       if (!response.ok) {
         console.error("Form submission error:", responseData);
-        throw new Error(responseData.error || "Failed to submit form");
+        throw new Error(
+          responseData?.error || `Failed with status ${response.status}`
+        );
       } // Show success notification with SweetAlert2
       await Swal.fire({
         icon: "success",
@@ -230,10 +239,17 @@ export default function GuestBookForm() {
       await Swal.fire({
         icon: "error",
         title: "Gagal",
-        text: `Gagal menyimpan data: ${error.message}`,
+        html: `
+            <div>
+              <p>Gagal menyimpan data: ${error.message}</p>
+              <p class="mt-2 text-sm">Silakan periksa koneksi internet Anda dan coba kembali.</p>
+              <p class="mt-2 text-sm">Jika masalah berlanjut, hubungi administrator sistem.</p>
+            </div>
+          `,
         confirmButtonColor: "#d33",
         confirmButtonText: "Coba Lagi",
-        footer: '<a href="/faq">Mengapa terjadi kesalahan?</a>',
+        footer:
+          '<a href="/api/guestbook/debug" target="_blank">Cek Status Koneksi Database</a>',
       });
     } finally {
       setIsSubmitting(false);

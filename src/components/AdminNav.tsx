@@ -39,6 +39,14 @@ export default function AdminNav() {
         >
           Storage Test
         </Link>
+        <Link
+          href="/admin/debug"
+          className={`${linkClasses(
+            "/admin/debug"
+          )} bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-300`}
+        >
+          Diagnosa Database
+        </Link>
       </nav>
     </div>
   );
