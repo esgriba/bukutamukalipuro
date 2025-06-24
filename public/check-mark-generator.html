@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Check Mark Animation Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: center;
+      }
+
+      .center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      canvas {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 20px 0;
+      }
+
+      .btn {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .info {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Check Mark Animation Generator</h1>
+    <p>Click below to generate a simple animated check mark file</p>
+
+    <div class="center">
+      <canvas id="checkCanvas" width="200" height="200"></canvas>
+      <button id="generateBtn" class="btn">
+        Generate & Download check-mark.gif
+      </button>
+    </div>
+
+    <div class="info">
+      <h3>Instructions:</h3>
+      <ol>
+        <li>Click the button above to generate and download check-mark.gif</li>
+        <li>Move the downloaded file to your project's public directory</li>
+        <li>In GuestBookForm.tsx, uncomment the backdrop section</li>
+      </ol>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById("checkCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Draw background
+        ctx.fillStyle = "rgba(0, 123, 255, 0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw circle
+        ctx.beginPath();
+        ctx.arc(100, 100, 70, 0, Math.PI * 2);
+        ctx.strokeStyle = "#4CAF50";
+        ctx.lineWidth = 10;
+        ctx.stroke();
+
+        // Draw check mark
+        ctx.beginPath();
+        ctx.moveTo(70, 100);
+        ctx.lineTo(90, 130);
+        ctx.lineTo(140, 70);
+        ctx.strokeStyle = "#4CAF50";
+        ctx.lineWidth = 12;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+
+        // Add download capability
+        document
+          .getElementById("generateBtn")
+          .addEventListener("click", function () {
+            // Create a link element
+            const link = document.createElement("a");
+
+            // Set the download attribute to a filename
+            link.download = "check-mark.gif";
+
+            // Since we can't actually generate a GIF here, we'll provide a static image
+            // In a real scenario, you would use a library like gif.js to create an actual GIF
+            link.href = canvas.toDataURL("image/png");
+
+            // Append the link to the body
+            document.body.appendChild(link);
+
+            // Programmatically click the link
+            link.click();
+
+            // Clean up by removing the link
+            document.body.removeChild(link);
+
+            alert(
+              "Image downloaded as PNG (not GIF). Please rename to check-mark.gif and place in your public directory."
+            );
+          });
+      });
+    </script>
+  </body>
+</html>
