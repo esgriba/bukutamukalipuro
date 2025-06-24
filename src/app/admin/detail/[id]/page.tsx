@@ -27,43 +27,126 @@ export default async function GuestDetail({ params }: Props) {
 
   // Handle invalid ID
   if (isNaN(guestId)) {
+    console.error(`[DetailPage] Invalid guest ID format: ${params.id}`);
     notFound();
-  }
-
-  // Fetch guest data from API instead of direct Prisma call to ensure cache control
+  } // Fetch guest data from API instead of direct Prisma call to ensure cache control
   const timestamp = Date.now(); // Add timestamp to prevent caching
-  const response = await fetch(
-    `${
-      process.env.VERCEL_URL || "http://localhost:3000"
-    }/api/guestbook/${guestId}?_t=${timestamp}`,
-    {
-      cache: "no-store",
-      next: { revalidate: 0 },
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
-    }
+
+  // Fix the URL construction for Vercel deployment with enhanced error logging
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  const domain =
+    process.env.VERCEL_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "localhost:3000";
+  const baseUrl = domain.includes("://") ? domain : `${protocol}://${domain}`;
+
+  console.log(
+    `[DetailPage] Environment: ${process.env.NODE_ENV}, Base URL: ${baseUrl}`
+  );
+  console.log(
+    `[DetailPage] Fetching guest ID ${guestId} from ${baseUrl}/api/guestbook/${guestId}?_t=${timestamp}`
   );
 
-  // If API call fails, fall back to direct Prisma query
-  let guest;
-  if (!response.ok) {
-    console.error(
-      `API call failed, falling back to direct Prisma query for guest ID ${guestId}`
+  let guestData = null;
+  let apiError = null;
+
+  try {
+    const response = await fetch(
+      `${baseUrl}/api/guestbook/${guestId}?_t=${timestamp}`,
+      {
+        cache: "no-store",
+        next: { revalidate: 0 },
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+          "x-requested-from": "detail-page-server",
+        },
+      }
     );
-    guest = await prisma.guestEntry.findUnique({
-      where: {
-        id: guestId,
-      },
-    });
-  } else {
-    guest = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        `API returned status ${response.status}: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    if (data && data.guest) {
+      guestData = data.guest;
+      console.log(
+        `[DetailPage] Successfully fetched guest data from API for ID ${guestId}`
+      );
+    } else {
+      throw new Error(`API response missing guest data for ID ${guestId}`);
+    }
+  } catch (error) {
+    apiError = error instanceof Error ? error.message : String(error);
+    console.error(`[DetailPage] API fetch error for ID ${guestId}:`, error);
+    // Will fall back to direct Prisma query below
+  }
+  // If API call fails or guestData is null, fall back to direct Prisma query
+  let guest = guestData;
+
+  try {
+    if (!guest) {
+      console.log(
+        `[DetailPage] API approach failed with error: ${apiError}, falling back to direct Prisma query for guest ID ${guestId}`
+      );
+
+      // Fall back to direct Prisma query
+      const prismaResult = await prisma.guestEntry.findUnique({
+        where: {
+          id: guestId,
+        },
+      });
+
+      if (prismaResult) {
+        guest = prismaResult;
+        console.log(
+          `[DetailPage] Direct Prisma query successful, found guest ID ${guestId}`
+        );
+      } else {
+        console.error(`[DetailPage] Guest ID ${guestId} not found in database`);
+        // Guest not found in database either
+        notFound();
+      }
+    }
+  } catch (error) {
+    console.error(`[DetailPage] Error processing guest data:`, error);
+
+    // Last resort attempt with Prisma
+    console.log(`[DetailPage] Making last resort attempt with Prisma`);
+    try {
+      guest = await prisma.guestEntry.findUnique({
+        where: {
+          id: guestId,
+        },
+      });
+
+      if (guest) {
+        console.log(
+          `[DetailPage] Last resort Prisma attempt successful, found guest ID ${guestId}`
+        );
+      }
+    } catch (prismaError) {
+      console.error(`[DetailPage] Final Prisma fallback failed:`, prismaError);
+      throw new Error(
+        `Failed to retrieve guest data: ${
+          prismaError instanceof Error
+            ? prismaError.message
+            : String(prismaError)
+        }`
+      );
+    }
   }
 
   // If guest not found
   if (!guest) {
+    console.error(
+      `[DetailPage] Guest ID ${guestId} not found after all attempts`
+    );
+
     notFound();
   }
 

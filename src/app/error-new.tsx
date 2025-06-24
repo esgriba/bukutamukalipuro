@@ -1,0 +1,83 @@
+"use client";
+
+import { useEffect } from "react";
+import Link from "next/link";
+import Header from "@/components/Header";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    // Log detailed error information for debugging
+    console.error("Application error:", error);
+    console.error("Error message:", error.message);
+    console.error("Error name:", error.name);
+    console.error("Error digest:", error.digest);
+    console.error("Error stack:", error.stack);
+  }, [error]);
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <div className="flex-grow bg-gray-100 flex flex-col items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-red-600 mb-4">
+              Terjadi Kesalahan
+            </h1>
+            <div className="mb-6">
+              <p className="text-gray-700 mb-2">
+                Maaf, terjadi kesalahan saat mengakses halaman ini.
+              </p>
+              <p className="text-gray-500 text-sm">
+                {error.message || "Terjadi kesalahan pada server."}
+              </p>
+              {error.digest && (
+                <p className="text-xs text-gray-400 mt-2">
+                  Kode referensi error: {error.digest}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => reset()}
+                className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              >
+                Coba Lagi
+              </button>
+
+              <Link
+                href="/"
+                className="block w-full bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
+              >
+                Kembali ke Halaman Utama
+              </Link>
+
+              <Link
+                href="/admin/diagnostic"
+                className="block w-full bg-yellow-100 text-yellow-800 px-4 py-2 rounded hover:bg-yellow-200 transition-colors border border-yellow-300"
+              >
+                Halaman Diagnostik
+              </Link>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-gray-200 text-xs text-gray-500">
+              <p>Jika masalah berlanjut, coba periksa:</p>
+              <ul className="list-disc list-inside mt-1 text-left">
+                <li>Koneksi internet Anda</li>
+                <li>Status koneksi database</li>
+                <li>Konfigurasi Supabase</li>
+                <li>Log aplikasi di Vercel</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

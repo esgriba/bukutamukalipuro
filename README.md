@@ -161,6 +161,25 @@ npm run build
 yarn build
 ```
 
+## Panduan Troubleshooting
+
+Dokumentasi troubleshooting lengkap tersedia untuk membantu mengatasi masalah umum:
+
+- [Troubleshooting Database](docs/troubleshooting-database.md) - Mengatasi masalah koneksi database dan caching
+- [Troubleshooting Server Exception](docs/troubleshooting-server-exceptions.md) - Mengatasi error server-side pada admin detail page
+- [Panduan Setup Supabase Storage](docs/supabase-storage-setup.md) - Konfigurasi untuk upload file
+- [Panduan Vercel Deployment](docs/vercel-deployment.md) - Instruksi deployment ke Vercel
+
+### Fitur Diagnostik
+
+Aplikasi ini dilengkapi dengan alat diagnostik untuk membantu troubleshooting:
+
+- `/admin/diagnostic` - Menampilkan status sistem secara menyeluruh
+- `/admin/debug` - Diagnosa koneksi database
+- `/admin/supabase-test` - Uji koneksi Supabase
+- `/admin/api-test` - Uji endpoint API
+- `/admin/network-monitor` - Monitor respons API dan status cache
+
 ## Lisensi
 
 MIT

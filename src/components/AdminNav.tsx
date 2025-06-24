@@ -61,7 +61,7 @@ export default function AdminNav() {
           )} bg-green-100 hover:bg-green-200 text-green-800 border border-green-300`}
         >
           API Test
-        </Link>
+        </Link>{" "}
         <Link
           href="/admin/network-monitor"
           className={`${linkClasses(
@@ -69,6 +69,14 @@ export default function AdminNav() {
           )} bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300`}
         >
           Network Monitor
+        </Link>
+        <Link
+          href="/admin/diagnostic"
+          className={`${linkClasses(
+            "/admin/diagnostic"
+          )} bg-red-100 hover:bg-red-200 text-red-800 border border-red-300`}
+        >
+          System Diagnostic
         </Link>
       </nav>
     </div>
