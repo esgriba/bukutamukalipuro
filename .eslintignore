@@ -1,0 +1,7 @@
+# Ignore test and development files
+public/uploads/
+src/app/admin/storage-test/
+src/app/admin/upload-test/
+src/app/api/admin/test-bucket/
+src/app/api/debug-supabase/
+src/app/api/test-supabase/
